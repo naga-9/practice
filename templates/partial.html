@@ -1,0 +1,14 @@
+{# Response for Unpoly fragment requests: a minimal document with only the target. #}
+{# It's still a full <html> document because Unpoly only reads <title> (and <head> meta) #}
+{# from full documents — a bare <main> would leave the tab title unchanged. #}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>{% block title %}Practice{% endblock %}</title>
+</head>
+<body>
+    <main class="container mt-4">
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>

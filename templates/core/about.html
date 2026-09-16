@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block title %}About{% endblock %}
+
+{% block content %}
+    <h1>About</h1>
+    <p>This is a practice project for <a href="https://unpoly.com" target="_blank">Unpoly</a> with Django.</p>
+    <p>Rendered at {{ now|time:"H:i:s" }}.</p>
+{% endblock %}

@@ -13,17 +13,17 @@ Legend: **[server]** = Django-side work needed, **[client]** = mostly `up-*` att
 
 ## 1. Setup & fundamentals
 
-- [ ] **Load Unpoly** — add CSS/JS via CDN to `base.html`, verify `up.version` in console. *[client]*
-- [ ] **Fragment links** — `<a href="/about" up-target="main">`. Only `<main>` is swapped, navbar stays.
+- [x] **Load Unpoly** — add CSS/JS via CDN to `base.html`, verify `up.version` in console. *[client]*
+- [x] **Fragment links** — `<a href="/about" up-target="main">`. Only `<main>` is swapped, navbar stays.
       Confirm the request header `X-Up-Target: main` arrives at Django. *[client, server]*
 - [ ] **Navigation vs. plain update** — `up-follow` vs `up-target` alone. Observe URL/history/scroll
       differences. *[client]*
 - [ ] **Multiple targets** — `up-target="main, .flash"` to update two fragments in one round-trip. *[client]*
-- [ ] **Partial rendering on the server** — read `request.headers["X-Up-Target"]` and render only the
+- [x] **Partial rendering on the server** — read `request.headers["X-Up-Target"]` and render only the
       fragment (skip `base.html`) to save bandwidth. Use `{% extends %}` conditionally or a helper. *[server]*
 - [ ] **Fallback when target missing** — `up-fallback`, and `up-target` pointing at an element the
       response doesn't contain. See how Unpoly recovers. *[client]*
-- [ ] **Loading state** — `.up-active` / `.up-loading` classes, add a spinner/progress bar via CSS. *[client]*
+- [x] **Loading state** — `.up-active` / `.up-loading` classes, add a spinner/progress bar via CSS. *[client]*
 
 ## 2. Forms
 
@@ -113,6 +113,18 @@ Combine everything in a small CRUD app (e.g. **Tasks** or **Notes**):
 ---
 
 ## Notes / questions to resolve while practising
+
+### Learned so far
+
+- **Partial responses must still be full documents if you want `<title>` updated.** Unpoly only reads
+  `<title>`/`<head>` from a response whose first tag is `<!DOCTYPE` or `<html>` (see `up.ResponseDoc`).
+  A bare `<main>` response swaps fine but leaves the tab title stale. `templates/partial.html` is
+  therefore a minimal `<html><head><title></head><body><main></body></html>`. Alternative: send an
+  `X-Up-Title` response header (JSON-encoded string).
+- Pattern for one view serving both full and fragment responses: page templates
+  `{% extends "base.html" %}`, and `base.html` is a one-liner `{% extends base_template %}` where a
+  context processor sets `base_template` to `layout.html` or `partial.html` based on `X-Up-Target`.
+- `.up-current` is applied to nav links matching the current URL with zero configuration.
 
 - Best way to serve both full-page and fragment-only responses from one view.
 - Whether a `django-unpoly` style package is worth it vs. a 30-line helper.
