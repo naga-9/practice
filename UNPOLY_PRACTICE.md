@@ -132,7 +132,14 @@ Combine everything in a small CRUD app (e.g. **Tasks** or **Notes**):
 - `up-fallback` kicks in when the target selector isn't on the page. Without it, a plain `up-target`
   link fails with `up.CannotMatch`; an `up-follow` link silently falls back to the main target.
 - `up-follow` links cache GETs: clicking two links to the same URL in quick succession can render
-  the *same* cached response (identical timestamps), then revalidate in the background.
+  the *same* cached response (identical timestamps), then revalidate in the background. Even a
+  plain `up-target` request populates the cache, so a later `up-follow` to that URL is instant.
+- Loading states, three layers: `.up-loading` on the fragment being replaced, `.up-active` on the
+  link/form that triggered it (both pure CSS), and `up:network:late` / `up:network:recover` events
+  for a global progress bar — fired only after `up.network.config.lateDelay` (400ms) so fast
+  requests never flicker. Use `/fragments/?slow=3` to see them on localhost.
+- `.up-current` compares the full URL including query string: `/fragments/?slow=3` does not mark
+  the `/fragments/` nav link current. See `up-alias` in section 5.
 
 - Best way to serve both full-page and fragment-only responses from one view.
 - Whether a `django-unpoly` style package is worth it vs. a 30-line helper.

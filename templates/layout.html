@@ -8,11 +8,24 @@
     <link href="https://cdn.jsdelivr.net/npm/unpoly@3.14.3/unpoly.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/unpoly@3.14.3/unpoly-bootstrap5.min.css" rel="stylesheet">
     <style>
-        /* Loading state: Unpoly adds .up-loading to the fragment being replaced */
+        /* Loading state: Unpoly adds .up-loading to the fragment being replaced ... */
         .up-loading { opacity: 0.5; transition: opacity 0.2s; }
+        /* ... and .up-active to the link or form that triggered the request. */
+        a.up-active { text-decoration: underline wavy; }
+        .nav-link.up-active { color: #ffc107 !important; }
+
+        /* Top progress bar, shown only when a request is "late" (see up:network:late below). */
+        #progress {
+            position: fixed; top: 0; left: 0; height: 3px; width: 0;
+            background: #0d6efd; z-index: 2000;
+            transition: width 0.3s ease, opacity 0.3s ease;
+            opacity: 0;
+        }
+        body.up-late #progress { width: 80%; opacity: 1; }
     </style>
 </head>
 <body>
+    <div id="progress"></div>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
             <a class="navbar-brand" href="{% url 'home' %}" up-follow>Practice</a>
@@ -42,5 +55,12 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/unpoly@3.14.3/unpoly.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/unpoly@3.14.3/unpoly-bootstrap5.min.js"></script>
+    <script>
+        // Unpoly fires up:network:late when a request has been pending longer than
+        // up.network.config.lateDelay (default 400ms), and up:network:recover once all
+        // late requests have finished. Fast requests therefore never flash a spinner.
+        up.on('up:network:late', () => document.body.classList.add('up-late'))
+        up.on('up:network:recover', () => document.body.classList.remove('up-late'))
+    </script>
 </body>
 </html>

@@ -37,6 +37,20 @@
         </div>
     </div>
 
+    <h2 class="h5">0. Loading states</h2>
+    <ul>
+        <li>
+            <a href="{% url 'fragments' %}?slow=3" up-target="#box-a">Slowly refresh Box A</a>
+            — server sleeps 3s. Box A dims (<code>.up-loading</code>), this link gets a wavy
+            underline (<code>.up-active</code>), and after 400ms a progress bar appears at the top
+            (<code>up:network:late</code>).
+        </li>
+        <li>
+            <a href="{% url 'fragments' %}?slow=3" up-follow>Slowly reload the whole page</a>
+            — same, but the entire <code>&lt;main&gt;</code> dims and the nav link lights up.
+        </li>
+    </ul>
+
     <h2 class="h5">1. Plain update vs. navigation</h2>
     <ul>
         <li>
