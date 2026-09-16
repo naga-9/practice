@@ -16,12 +16,12 @@ Legend: **[server]** = Django-side work needed, **[client]** = mostly `up-*` att
 - [x] **Load Unpoly** — add CSS/JS via CDN to `base.html`, verify `up.version` in console. *[client]*
 - [x] **Fragment links** — `<a href="/about" up-target="main">`. Only `<main>` is swapped, navbar stays.
       Confirm the request header `X-Up-Target: main` arrives at Django. *[client, server]*
-- [ ] **Navigation vs. plain update** — `up-follow` vs `up-target` alone. Observe URL/history/scroll
+- [x] **Navigation vs. plain update** — `up-follow` vs `up-target` alone. Observe URL/history/scroll
       differences. *[client]*
-- [ ] **Multiple targets** — `up-target="main, .flash"` to update two fragments in one round-trip. *[client]*
+- [x] **Multiple targets** — `up-target="main, .flash"` to update two fragments in one round-trip. *[client]*
 - [x] **Partial rendering on the server** — read `request.headers["X-Up-Target"]` and render only the
       fragment (skip `base.html`) to save bandwidth. Use `{% extends %}` conditionally or a helper. *[server]*
-- [ ] **Fallback when target missing** — `up-fallback`, and `up-target` pointing at an element the
+- [x] **Fallback when target missing** — `up-fallback`, and `up-target` pointing at an element the
       response doesn't contain. See how Unpoly recovers. *[client]*
 - [x] **Loading state** — `.up-active` / `.up-loading` classes, add a spinner/progress bar via CSS. *[client]*
 
@@ -125,6 +125,14 @@ Combine everything in a small CRUD app (e.g. **Tasks** or **Notes**):
   `{% extends "base.html" %}`, and `base.html` is a one-liner `{% extends base_template %}` where a
   context processor sets `base_template` to `layout.html` or `partial.html` based on `X-Up-Target`.
 - `.up-current` is applied to nav links matching the current URL with zero configuration.
+- `up-follow` alone is enough for page links once `<main up-main>` is marked; `up-target` is only
+  needed to swap something other than the main element. Demo page: `/fragments/`.
+- `up-target="#a, #c"` swaps both in one request; the server just renders the whole `<main>` and
+  Unpoly picks out the pieces.
+- `up-fallback` kicks in when the target selector isn't on the page. Without it, a plain `up-target`
+  link fails with `up.CannotMatch`; an `up-follow` link silently falls back to the main target.
+- `up-follow` links cache GETs: clicking two links to the same URL in quick succession can render
+  the *same* cached response (identical timestamps), then revalidate in the background.
 
 - Best way to serve both full-page and fragment-only responses from one view.
 - Whether a `django-unpoly` style package is worth it vs. a 30-line helper.

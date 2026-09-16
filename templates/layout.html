@@ -15,24 +15,27 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
-            <a class="navbar-brand" href="{% url 'home' %}" up-follow up-target="main">Practice</a>
+            <a class="navbar-brand" href="{% url 'home' %}" up-follow>Practice</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'home' %}" up-follow up-target="main">Home</a>
+                        <a class="nav-link" href="{% url 'home' %}" up-follow>Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'about' %}" up-follow up-target="main">About</a>
+                        <a class="nav-link" href="{% url 'about' %}" up-follow>About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'fragments' %}" up-follow>Fragments</a>
                     </li>
                 </ul>
             </div>
         </div>
     </nav>
 
-    <main class="container mt-4">
+    <main up-main class="container mt-4">
         {% block content %}{% endblock %}
     </main>
 

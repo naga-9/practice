@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}Fragments{% endblock %}
+
+{% block content %}
+    <h1>Fragment updates</h1>
+    <p class="text-muted">
+        Page rendered at <strong>{{ now|time:"H:i:s" }}</strong>.
+        Each box below shows when <em>it</em> was last rendered, so you can see exactly which parts
+        of the page a link replaced.
+    </p>
+
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div id="box-a" class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Box A</h5>
+                    <p class="card-text">Rendered {{ now|time:"H:i:s" }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div id="box-b" class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Box B</h5>
+                    <p class="card-text">Rendered {{ now|time:"H:i:s" }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div id="box-c" class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Box C</h5>
+                    <p class="card-text">Rendered {{ now|time:"H:i:s" }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h2 class="h5">1. Plain update vs. navigation</h2>
+    <ul>
+        <li>
+            <a href="{% url 'fragments' %}" up-target="#box-a">Refresh Box A</a>
+            — <code>up-target</code> only: no history entry, no scroll, title untouched.
+        </li>
+        <li>
+            <a href="{% url 'fragments' %}" up-follow up-target="#box-a">Refresh Box A as a navigation</a>
+            — <code>up-follow</code>: same swap, but treated as navigation (history, scroll, feedback).
+        </li>
+    </ul>
+
+    <h2 class="h5">2. Multiple targets in one request</h2>
+    <ul>
+        <li>
+            <a href="{% url 'fragments' %}" up-target="#box-a, #box-c">Refresh A and C</a>
+            — one round-trip, two fragments swapped; B stays.
+        </li>
+    </ul>
+
+    <h2 class="h5">3. Fallback when the target is missing</h2>
+    <ul>
+        <li>
+            <a href="{% url 'fragments' %}" up-target="#does-not-exist" up-fallback="#box-b">Target #does-not-exist</a>
+            — not on the page, so Unpoly falls back to <code>#box-b</code>.
+        </li>
+        <li>
+            <a href="{% url 'fragments' %}" up-target="#does-not-exist">Target #does-not-exist, no fallback</a>
+            — Unpoly can't find the target anywhere: check the console for
+            <code>up.CannotMatch</code>.
+        </li>
+        <li>
+            <a href="{% url 'fragments' %}" up-follow up-target="#does-not-exist">…but with up-follow</a>
+            — navigation implies <code>fallback: true</code>, so it falls back to the main target.
+        </li>
+    </ul>
+{% endblock %}

@@ -7,3 +7,7 @@ def home(request):
 
 def about(request):
     return render(request, "core/about.html")
+
+
+def fragments(request):
+    return render(request, "core/fragments.html")
