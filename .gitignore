@@ -19,3 +19,8 @@ env/
 
 # Env / secrets
 .env
+
+# Django
+db.sqlite3
+/media/
+/staticfiles/
