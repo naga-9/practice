@@ -11,6 +11,16 @@ def up_target(request):
     return request.headers.get("X-Up-Target")
 
 
+def up_validate(request):
+    """
+    Names of the fields being validated via [up-validate], or None.
+
+    Unpoly submits the form with X-Up-Validate set when a watched field changes.
+    The server should validate and re-render the form *without* saving.
+    """
+    return request.headers.get("X-Up-Validate")
+
+
 def base_template(request):
     """
     Template that page templates should extend.

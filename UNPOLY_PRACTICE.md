@@ -27,12 +27,12 @@ Legend: **[server]** = Django-side work needed, **[client]** = mostly `up-*` att
 
 ## 2. Forms
 
-- [ ] **Submit a form via Unpoly** — `<form up-submit up-target="#form-area">`. On validation error,
+- [x] **Submit a form via Unpoly** — `<form up-submit up-target="#form-area">`. On validation error,
       Django re-renders the form; Unpoly swaps it in place. Note: Django must return a non-2xx
       (e.g. `422`) or Unpoly will treat it as success — try `up-fail-target` too. *[server, client]*
-- [ ] **Successful submit redirects** — POST → `redirect()` → Unpoly follows and updates the target.
+- [x] **Successful submit redirects** — POST → `redirect()` → Unpoly follows and updates the target.
       Check the `X-Up-Location` header behaviour. *[server]*
-- [ ] **Live validation** — `up-validate` on individual fields; Django responds to
+- [x] **Live validation** — `up-validate` on individual fields; Django responds to
       `X-Up-Validate` by running form validation without saving. *[server, client]*
 - [ ] **Dependent fields** — `up-validate` on a `<select>` to re-render a second select
       (e.g. country → city). *[server, client]*
@@ -138,6 +138,16 @@ Combine everything in a small CRUD app (e.g. **Tasks** or **Notes**):
   link/form that triggered it (both pure CSS), and `up:network:late` / `up:network:recover` events
   for a global progress bar — fired only after `up.network.config.lateDelay` (400ms) so fast
   requests never flicker. Use `/fragments/?slow=3` to see them on localhost.
+- Forms (`/contacts/`): Django must answer **422** when re-rendering a form with errors, otherwise
+  Unpoly treats the response as a success and renders it into the success target. On 4xx/5xx
+  Unpoly renders `[up-fail-target]` instead (here the form itself). On success the view does a
+  normal `redirect()`; Unpoly follows it and renders the target from the redirected page.
+- `[up-validate]` on a field POSTs the form with `X-Up-Validate: <field>` on change. The view
+  runs `form.is_valid()` and re-renders with status 200, never saving. Unpoly only swaps the
+  field's enclosing `[up-form-group]` (or `fieldset`/`label`), so errors for untouched fields don't
+  appear — mark Bootstrap `.mb-3` wrappers with `up-form-group` or the whole form is swapped.
+- Django `messages` work unchanged: `_flash.html` is included inside `<main>` in both layouts,
+  so it's part of every fragment response.
 - `.up-current` compares the full URL including query string: `/fragments/?slow=3` does not mark
   the `/fragments/` nav link current. See `up-alias` in section 5.
 

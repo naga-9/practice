@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}Contacts{% endblock %}
+
+{% block content %}
+    <h1>Contacts</h1>
+    <p class="text-muted">
+        Page rendered at <strong>{{ now|time:"H:i:s" }}</strong>.
+        The form submits with <code>up-submit</code>; validation errors re-render only the form
+        (Django answers <code>422</code>), a successful save redirects and re-renders
+        <code>&lt;main&gt;</code>. The email field validates live via <code>up-validate</code>.
+    </p>
+
+    <div class="row g-4">
+        <div class="col-md-5">
+            <form id="contact-form" method="post" action="{% url 'contacts' %}"
+                  up-submit up-fail-target="#contact-form">
+                {% csrf_token %}
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">New message</h5>
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+                        {% endif %}
+
+                        {% for field in form %}
+                            <div class="mb-3" up-form-group>
+                                <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                                {{ field }}
+                                {% for error in field.errors %}
+                                    <div class="text-danger small mt-1">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        {% endfor %}
+
+                        <button type="submit" class="btn btn-primary">Send</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="col-md-7">
+            <h5>Received ({{ contacts|length }})</h5>
+            <ul id="contact-list" class="list-group">
+                {% for contact in contacts %}
+                    <li class="list-group-item">
+                        <strong>{{ contact.name }}</strong>
+                        <span class="text-muted">&lt;{{ contact.email }}&gt;</span>
+                        <small class="text-muted float-end">{{ contact.created_at|time:"H:i:s" }}</small>
+                        <div>{{ contact.message }}</div>
+                    </li>
+                {% empty %}
+                    <li class="list-group-item text-muted">Nothing yet.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+{% endblock %}
